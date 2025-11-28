@@ -17,13 +17,13 @@ class DigipotService:
 			#Print changes in the console
 			print(f"[DigiPot] Set digipot to value: {value}")
 
-			#Sent message to the websocket endpoint from the API
+			#Send message to the websocket endpoint from the API
 			await manager.broadcast("/box/digipot", {"voltage": value, "error": False})
 		except Exception as e:
 			#Print changes in the console when something goes wrong
 			print(f"[DigiPot] Failed to set value: {e}")
 
-			#Sent message to the websocket endpoint from the API when a problem occurs
+			#Send message to the websocket endpoint from the API when a problem occurs
 			await manager.broadcast("/box/digipot", {"voltage": -1, "error": True})
 			
 	def stop(self):
