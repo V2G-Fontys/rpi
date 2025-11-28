@@ -1,6 +1,7 @@
 import asyncio
 from services.modbus_controller import ModbusService
 from services.pyplc_bridge import PyPlcService
+from services.digipot_controller import DigipotService
 from core.logger import get_logger
 import signal
 
@@ -11,6 +12,7 @@ async def main():
 
     modbus = ModbusService()
     pyplc = PyPlcService(modbus.send_to_backend)
+    digipot = DigipotService()
 
     loop = asyncio.get_running_loop()
     stop_event = asyncio.Event()
@@ -19,6 +21,7 @@ async def main():
         logger.info("Shutdown requested by user.")
         modbus.stop()
         pyplc.stop()
+        digipot.stop()
         stop_event.set()
 
     for sig in (signal.SIGINT, signal.SIGTERM):
