@@ -1,5 +1,4 @@
 import spidev
-import time
 from ws.status_ws import manager
 
 class DigipotService:
