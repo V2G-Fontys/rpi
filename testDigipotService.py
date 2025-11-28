@@ -7,6 +7,6 @@ async def main():
     
     wiper_value = 100
     
-    digipot.set_digipot(wiper_value)
+    await digipot.set_digipot(wiper_value)
 
 asyncio.run(main())
