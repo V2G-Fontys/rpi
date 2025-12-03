@@ -37,7 +37,7 @@ For any sort of code should be a description written down here so that other pro
 Simple, understandable installation instructions!
 
 ```bash
-pip install my-package
+pip install RPi.GPIO
 ```
 
 And be sure to specify any other minimum requirements like Python versions or operating systems.
