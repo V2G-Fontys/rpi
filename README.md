@@ -36,7 +36,10 @@ For any sort of code should be a description written down here so that other pro
 
 Simple, understandable installation instructions!
 
-```bash
+Turn on SPI for digital potentiometer
+```sudo raspi-config```
+Interface options -> SPI -> YES -> OK -> FINISH
+
 pip install RPi.GPIO
 ```
 
