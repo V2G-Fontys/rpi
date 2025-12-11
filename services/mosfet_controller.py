@@ -22,13 +22,13 @@ class MosfetService:
 			print(f"[Mosfet] Set mosfet({GPIOPin}) to {State}")
 
 			#Send message to the websocket endpoint from the API
-			#await manager.broadcast("mosfet", {"GPIOPin": State, "error": False})
+			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": False})
 		except Exception as e:
 			#Print changes in the console when something goes wrong
 			print(f"[Mosfet] Failed to set value: {e}")
 
 			#Send message to the websocket endpoint from the API when a problem occurs
-			#await manager.broadcast("mosfet", {"GPIOPin": -1, "error": True})
+			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": True})
 			
 	def stop(self):
 		GPIO.cleanup()
