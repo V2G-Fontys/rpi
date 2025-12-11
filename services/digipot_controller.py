@@ -1,25 +1,32 @@
 import spidev
-import time
-from core.logger import get_logger
+from ws.status_ws import manager
 
 class DigipotService:
 	def __init__(self):
-		self.logger = get_logger("DigipotService")  # Initialize logger
-		self.spi = None
-	def set_digipot(self, value):
+		#Initialize spiDev
+		self.spi = spidev.SpiDev()
+		self.spi.open(0, 0)
+		self.spi.max_speed_hz = 1000000
+		self.spi.max_speed_hz = 1000000
+		
+	async def set_digipot(self, value):
 		try:
-			self.value = value
-			self.spi = spidev.SpiDev()
-			self.spi.open(0, 0)
-			self.spi.max_speed_hz = 1000000
+			#Changed Digipot register 0x00 via Spidev based on the value when calling the function
 			self.spi.xfer2([0x00, self.value])
-			self.logger.info(f"[DigiPot] Set digipot to value: {value}")
+
+			#Print changes in the console
+			print(f"[DigiPot] Set digipot to value: {value}")
+
+			#Send message to the websocket endpoint from the API
+			await manager.broadcast("/box/digipot", {"voltage": value, "error": False})
 		except Exception as e:
-			self.logger.error(f"[DigiPot] Failed to set value: {e}")
-		finally:
-			if self.spi:
-				self.spi.close()
+			#Print changes in the console when something goes wrong
+			print(f"[DigiPot] Failed to set value: {e}")
+
+			#Send message to the websocket endpoint from the API when a problem occurs
+			await manager.broadcast("/box/digipot", {"voltage": -1, "error": True})
 			
 	def stop(self):
 		self._running = False
-
+		if self.spi:
+			self.spi.close()
