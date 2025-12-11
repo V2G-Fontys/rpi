@@ -36,6 +36,7 @@ class ModbusService:
             self.logger.error("No Modbus USB adapter found.")
             return
         client = self.init_modbus(port)
+        client.slave = MODBUS_ID
         if not client.connect():
             self.logger.error(f"Could not connect to inverter on {port}")
             return
@@ -66,7 +67,6 @@ class ModbusService:
 
     def init_modbus(self, port):
         return ModbusSerialClient(
-            method='rtu',
             port=port,
             baudrate=BAUDRATE,
             stopbits=STOPBITS,
@@ -77,7 +77,7 @@ class ModbusService:
 
     def read_scaled_register(self, client, reg):
         try:
-            rr = client.read_holding_registers(reg, 1, unit=MODBUS_ID)
+            rr = client.read_holding_registers(reg, 1)
             if not rr.isError():
                 return rr.registers[0] / 10.0
             else:
@@ -88,14 +88,14 @@ class ModbusService:
 
     def set_mode(self, client, mode):
         try:
-            client.write_register(REG_MODE, mode, unit=MODBUS_ID)
+            client.write_register(REG_MODE, mode)
             self.logger.info(f"[Modbus] Set mode to {mode}")
         except Exception as e:
             self.logger.error(f"[Modbus] Failed to set mode: {e}")
 
     def set_discharge_power(self, client, watts):
         try:
-            client.write_register(REG_DISCHARGE_POWER, watts, unit=MODBUS_ID)
+            client.write_register(REG_DISCHARGE_POWER, watts)
             self.logger.info(f"[Modbus] Set discharge power to {watts}W")
         except Exception as e:
             self.logger.error(f"[Modbus] Failed to set power: {e}")

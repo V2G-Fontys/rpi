@@ -3,20 +3,28 @@ import os
 from core.http_requests import HTTPRequests
 from core.logger import get_logger
 
-PYPLC_SCRIPT = os.path.expanduser("~/V2G/pyPlc/pyplc.py")
-PYPLC_CONFIG = os.path.expanduser("~/V2G/pyPlc/pyplc.ini")
-
+# this class boots the PyPlc application, and manages the Application data 
 class PyPlcService:
     def __init__(self, send_to_backend_callback=None, backend_url="http://localhost:8080/api/ev-status"):
         self.logger = get_logger("PyPlcService")
         self._running = True
         self.http = HTTPRequests(backend_url)
         self.send_to_backend = send_to_backend_callback or self._send_to_backend
-
+    
+    
     async def run(self):
-        cmd = ["sudo", "python3", PYPLC_SCRIPT, PYPLC_CONFIG]
-        self.logger.info(f"Starting pyPLC subprocess: {' '.join(cmd)}")
-        proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+        pyplc_dir = os.path.expanduser("~/V2G/pyPlc") # the directory the files are located
+        cmd = ["sudo", "python3", "pyPlc.py", "pyPlc.ini"]  # commands to run
+        
+        self.logger.info(f"Starting pyPLC subprocess in {pyplc_dir}: {' '.join(cmd)}")
+        #execute commands
+        proc = await asyncio.create_subprocess_exec(
+        *cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.STDOUT,
+        cwd=pyplc_dir  # this leads us to the working directory described above
+        )
+        
         try:
             while self._running:
                 line = await proc.stdout.readline()
@@ -46,7 +54,7 @@ class PyPlcService:
                 self.logger.error(f"Failed to parse: {line} -> {e}")
         return None
 
-    async def _send_to_backend(self, data):
+    async def send_to_backend(self, data):
         await self.http.post("/api/ev-status", data)
 
     def stop(self):
