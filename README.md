@@ -11,7 +11,7 @@ For any sort of code should be a description written down here so that other pro
 
 ### ✍️ Authors
 
-- Mike Weijts | m.weijts@student.fontys.nl | 3th Semester
+- Mike Weijts | m.weijts@student.fontys.nl | 3rd Semester
 
 
 ## 🚀 Structure
