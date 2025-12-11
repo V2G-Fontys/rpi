@@ -1,7 +1,7 @@
 # 📦 Raspberry Pi V2G
 
 This is the Raspberry Pi **V2G repository README** in which we will explain all the parts of the code **we know**.
-For any sort of code should be a description written down here so that other programmers can easily read and understand here what the code does, no matter there skill level.
+For any sort of code should be a description written down here so that other programmers can easily read and understand here what the code does, no matter their skill level.
 
 
 ## 🌟 Highlights
