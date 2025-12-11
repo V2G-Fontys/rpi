@@ -9,17 +9,17 @@ class State(Enum):
 class MosfetService:
 	def __init__(self):
 		GPIO.setmode(GPIO.BOARD)
-	async def set_mosfet(self, GPIOPin, State):
+	async def set_mosfet(self, GPIOPin, state: State):
 		try:
 			GPIO.setup(GPIOPin, GPIO.OUT)
 			
-			if (State == 'ON'):
+			if state == State.ON:
 				GPIO.output(GPIOPin, GPIO.HIGH)
-			elif (State == 'OFF'):
+			elif state == State.OFF:
 				GPIO.output(GPIOPin, GPIO.LOW)
 
 			#Print changes in the console
-			print(f"[Mosfet] Set mosfet({GPIOPin}) to {State}")
+			print(f"[Mosfet] Set mosfet({GPIOPin}) to {state.name}")
 
 			#Send message to the websocket endpoint from the API
 			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": False})
