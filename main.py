@@ -3,13 +3,18 @@ from services.modbus_controller import ModbusService
 from services.pyplc_bridge import PyPlcService
 from services.digipot_controller import DigipotService
 from core.logger import get_logger
+from system_states import States
+from APIServer.endpoints.api_endpoints import start_discharging
 import signal
+
+
 
 logger = get_logger("V2GRunner")
 
 async def main():
     logger.info("Starting V2G software stack...")
-
+    await start_discharging(200)
+    #initialize all the services here
     modbus = ModbusService()
     pyplc = PyPlcService(modbus.send_to_backend)
     digipot = DigipotService()
@@ -32,6 +37,8 @@ async def main():
         pyplc.run(),
         stop_event.wait()
     )
+    
+
 
 if __name__ == "__main__":
     try:
