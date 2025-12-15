@@ -1,5 +1,5 @@
 import spidev
-from ws.status_ws import manager
+from APIServer.wsmanager.ws_manager import manager
 
 class DigipotService:
 	def __init__(self):
@@ -30,3 +30,4 @@ class DigipotService:
 		self._running = False
 		if self.spi:
 			self.spi.close()
+digipot = DigipotService()
