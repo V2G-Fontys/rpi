@@ -13,9 +13,9 @@ async def main():
     mosfet = MosfetService()
     
     #Sets mosfet on or off set_mosfet({PIN}, '{1/0}')
-    await mosfet.set_mosfet(MosfetPins.BOOSTCONVERTERS, 0)
-    await mosfet.set_mosfet(MosfetPins.PRECHARGE, 0)
-    await mosfet.set_mosfet(MosfetPins.POSITIVE_RELAY, 0)
-    await mosfet.set_mosfet(MosfetPins.NEGATIVE_RELAY, 0)
+    await mosfet.set_mosfet(MosfetPins.BOOSTCONVERTERS.value, 0)
+    await mosfet.set_mosfet(MosfetPins.PRECHARGE.value, 0)
+    await mosfet.set_mosfet(MosfetPins.POSITIVE_RELAY.value, 0)
+    await mosfet.set_mosfet(MosfetPins.NEGATIVE_RELAY.value, 0)
 
 asyncio.run(main())
