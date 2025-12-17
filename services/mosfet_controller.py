@@ -43,7 +43,7 @@ class MosfetService:
 				GPIO.output(mosfet.value, GPIO.LOW)
 		except Exception as e:
 			#Print changes in the console when something goes wrong
-			print(f"[Mosfet] Failed to disable mosfet")
+			print(f"[Mosfet] Failed to disable mosfet: {e}")
 
 			#Send message to the websocket endpoint from the API when a problem occurs
 			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": True})
