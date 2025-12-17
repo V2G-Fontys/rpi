@@ -19,7 +19,7 @@ class MosfetService:
 				GPIO.output(GPIOPin, GPIO.LOW)
 
 			#Print changes in the console
-			#print(f"[Mosfet] Set mosfet({GPIOPin}) to {state.name}")
+			print(f"[Mosfet] Set mosfet({GPIOPin}) to {state.name}")
 
 			#Send message to the websocket endpoint from the API
 			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": False})

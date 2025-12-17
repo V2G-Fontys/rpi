@@ -24,3 +24,5 @@ class SlacData:
 
     def get(key):
         return SLACData.get(key)
+
+Sldata = SlacData()

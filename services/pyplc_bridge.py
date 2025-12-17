@@ -1,6 +1,6 @@
 import asyncio
 import os
-from services.slac_data import *
+from services.slac_data import SlData
 #from core.http_requests import HTTPRequests
 from core.logger import get_logger
 
@@ -54,17 +54,12 @@ class PyPlcService:
             except Exception as e:
                 self.logger.error(f"Failed to parse: {line} -> {e}")
         return None
-    async def get_car_data(self):
-        return SLACData
-            
+        
+    async def is_car_connected(self):
+        return S
                 
     def stop(self):
         self._running = False
 
-if __name__ == "__main__":
-    service = PyPlcService()
-    asyncio.run(service.run())
-
-
-
+pyplc = PyPlcService()
 

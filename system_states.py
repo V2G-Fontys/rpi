@@ -51,7 +51,7 @@ class StateMachine:
     async def run(self):
         while self.running:
             try:
-                self.logger.debug(f"STATE = {self.state.name}")
+                #self.logger.debug(f"STATE = {self.state.name}")
                 if self.state == States.IDLE:
                     await self._handle_idle()
 
@@ -89,9 +89,7 @@ class StateMachine:
     async def _handle_car_disconnected(self):
         self.logger.info("Waiting for car connection")
 
-        #connected = await pyplc.is_car_connected()
-        connected = True
-        
+        connected = await pyplc.is_car_connected()
         if connected:
             self.state = States.CAR_CONNECTED
 
@@ -127,9 +125,17 @@ class StateMachine:
         #current = await modbus.read_current()
         voltage = 426
         current = 16
-        power_kw = (voltage * current) / 1000
-        self.current_KWH += power_kw * (0.5 / 3600)
+        #power_kw = (voltage * current) / 1000
+        #self.current_KWH += power_kw * (0.5 / 3600)
         self.logger.info(f"Discharged {self.current_KWH:.2f}  {self.target_KWH} kWh")
+
+        if self.current_KWH >= self.target_KWH:
+            self.state = States.CHARGE_TARGET_REACHED
+            
+    async def _handle_charging(self):
+        self.logger.info("Charging EV")
+
+        self.logger.info(f"Charging {self.current_KWH:.2f}  {self.target_KWH} kWh")
 
         if self.current_KWH >= self.target_KWH:
             self.state = States.CHARGE_TARGET_REACHED
