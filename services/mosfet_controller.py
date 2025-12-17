@@ -15,8 +15,8 @@ class MosfetService:
 		GPIO.setmode(GPIO.BOARD)
 		GPIO.setwarnings(False)
 		
-		for Mosfet in MosfetPins:
-			GPIO.setup(Mosfet.value, GPIO.OUT)
+		for mosfet in MosfetPins:
+			GPIO.setup(mosfet.value, GPIO.OUT)
 		
 	async def set_mosfet(self, GPIOPin, State):
 		try:		
