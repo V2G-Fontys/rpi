@@ -2,32 +2,33 @@ import RPi.GPIO as GPIO
 from enum import Enum
 #from ws.status_ws import manager
 
-State = bool
+class State(Enum):
+	ON = 1
+	OFF = 0
 	
 class MosfetService:
 	def __init__(self):
 		GPIO.setmode(GPIO.BOARD)
-		GPIO.setwarnings(False)
-	async def set_mosfet(self, GPIOPin, State):
+	async def set_mosfet(self, GPIOPin, state: State):
 		try:
 			GPIO.setup(GPIOPin, GPIO.OUT)
 			
-			if State:
+			if state == State.ON:
 				GPIO.output(GPIOPin, GPIO.HIGH)
-			else:
+			elif state == State.OFF:
 				GPIO.output(GPIOPin, GPIO.LOW)
 
 			#Print changes in the console
-			print(f"[Mosfet] Set mosfet({GPIOPin}) to {State}")
+			print(f"[Mosfet] Set mosfet({GPIOPin}) to {state.name}")
 
 			#Send message to the websocket endpoint from the API
-			#await manager.broadcast("mosfet", {"GPIOPin": State, "error": False})
+			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": False})
 		except Exception as e:
 			#Print changes in the console when something goes wrong
 			print(f"[Mosfet] Failed to set value: {e}")
 
 			#Send message to the websocket endpoint from the API when a problem occurs
-			#await manager.broadcast("mosfet", {"GPIOPin": -1, "error": True})
+			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": True})
 			
 	def stop(self):
 		GPIO.cleanup()
