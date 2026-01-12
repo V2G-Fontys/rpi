@@ -1,24 +1,33 @@
 import RPi.GPIO as GPIO
-from enum import Enum
+from enum import IntEnum
+import serial
 #from ws.status_ws import manager
 
-State = bool
-
-class MosfetPins(Enum):
-	BOOSTCONVERTERS = 29
-	PRECHARGE = 31
-	POSITIVE_RELAY = 33
-	NEGATIVE_RELAY = 32
+#the pins used on the arduino , if you need to change the pins do that here
+class MosfetPins(IntEnum):
+	BOOSTCONVERTER = 10
+	PRECHARGE = 11
+	POSITIVE_RELAY = 12
+	NEGATIVE_RELAY = 13
 	
 class MosfetService:
 	def __init__(self):
 		GPIO.setmode(GPIO.BOARD)
-		GPIO.setwarnings(False)
-		
+		GPIO.setwarnings(False) #if true gives extra error codes like this pin is already in use
+		try:
+			#find if arduino is connected by ls /dev , they show up as ttyACMx
+			#self.ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1) #comment this out if you do not need arduino for mosfets
+			print("Serial port arduino opened")
+		except serial.SerialException as e:
+			print("Failed to open serial:", e)
+			print("If you didnt connect an arduino for mosfets you can comment this out")
+			exit()
+			
 		for mosfet in MosfetPins:
 			GPIO.setup(mosfet.value, GPIO.OUT)
-		
-	async def set_mosfet(self, GPIOPin, State):
+			
+	#main function to turn on gpio pins on rpi
+	async def set_mosfet(self, GPIOPin, State = bool):
 		try:		
 			if State:
 				GPIO.output(GPIOPin, GPIO.HIGH)
@@ -28,15 +37,23 @@ class MosfetService:
 			#Print changes in the console
 			print(f"[Mosfet] Set mosfet({GPIOPin}) to {State}")
 
-			#Send message to the websocket endpoint from the API
-			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": False})
 		except Exception as e:
 			#Print changes in the console when something goes wrong
 			print(f"[Mosfet] Failed to set value: {e}")
-
-			#Send message to the websocket endpoint from the API when a problem occurs
-			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": True})
-	
+				
+	#this function is only used in the case that you have mosfets that switch on around 5v
+	#you can test it on an arduino(uses 5v for example instead of rpi's 3.3v, which is not enough for some mosfets)
+	async def set_arduino(self, pin, State = bool):
+		print(f"{str(pin)},{str(State)}")
+		try:
+			#TODO: do two way communication to see if arduino is connected
+			self.ser.write(chr(pin).encode('utf-8')) 
+			self.ser.write(chr(State).encode('utf-8')) 
+		except Exception as e:
+			print(f"[Mosfet]Failed to Set mosfet({GPIOPin}) to {State}")
+			print(e)
+			
+	#this function is used to disable all the mosfets to off. only works with raspberry pi GPIO
 	async def disable_mosfets(self):
 		try:
 			for mosfet in MosfetPins:
@@ -44,9 +61,12 @@ class MosfetService:
 		except Exception as e:
 			#Print changes in the console when something goes wrong
 			print(f"[Mosfet] Failed to disable mosfet: {e}")
-
-			#Send message to the websocket endpoint from the API when a problem occurs
-			#await manager.broadcast("mosfet", {"GPIOPin": GPIOPin, "State": State, "error": True})
+			
+	#only works if raspberry pi GPIO pins are used
+	def get_mosfet_status(self, GPIOPin):
+		return GPIO.input(GPIOPin)
+		
+	#cleans up the gpio pins
 	def stop(self):
 		GPIO.cleanup()
 		

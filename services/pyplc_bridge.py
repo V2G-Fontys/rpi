@@ -1,27 +1,28 @@
 import asyncio
 import os
-from core.http_requests import HTTPRequests
+from services.slac_data import get_slac
+#from core.http_requests import HTTPRequests
 from core.logger import get_logger
 
+
+slacData = get_slac()
 # this class boots the PyPlc application, and manages the Application data 
 class PyPlcService:
-    def __init__(self, send_to_backend_callback=None, backend_url="http://localhost:8080/api/ev-status"):
+    def __init__(self):
         self.logger = get_logger("PyPlcService")
         self._running = True
-        self.http = HTTPRequests(backend_url)
-        self.send_to_backend = send_to_backend_callback or self._send_to_backend
-    
     
     async def run(self):
+        
         pyplc_dir = os.path.expanduser("~/V2G/pyPlc") # the directory the files are located
-        cmd = ["sudo", "python3", "pyPlc.py", "pyPlc.ini"]  # commands to run
+        cmd = ["sudo", "python3", "-u","pyPlc.py", "pyPlc.ini"]  # commands to run
         
         self.logger.info(f"Starting pyPLC subprocess in {pyplc_dir}: {' '.join(cmd)}")
         #execute commands
         proc = await asyncio.create_subprocess_exec(
         *cmd,
         stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
+        stderr=asyncio.subprocess.PIPE,
         cwd=pyplc_dir  # this leads us to the working directory described above
         )
         
@@ -53,13 +54,14 @@ class PyPlcService:
             except Exception as e:
                 self.logger.error(f"Failed to parse: {line} -> {e}")
         return None
-
-    async def send_to_backend(self, data):
-        await self.http.post("/api/ev-status", data)
-
+        
+    async def is_car_prechargemode(self):
+        self.logger.info("####################################################################\n")
+        self.logger.info(slacData.get("evseState"))
+        return (slacData.get("evseState") == "PreCharging")
+                
     def stop(self):
         self._running = False
 
-if __name__ == "__main__":
-    service = PyPlcService()
-    asyncio.run(service.run())
+pyplc = PyPlcService()
+

@@ -110,29 +110,3 @@ class ModbusService:
 if __name__ == "__main__":
     service = ModbusService()
     asyncio.run(service.run())
-
-class PyPlcService:
-    def __init__(self, send_to_backend_callback):
-        self.send_to_backend = send_to_backend_callback
-        self.logger = get_logger("PyPlcService")
-        self._running = True
-
-    async def run(self):
-        while self._running:
-            try:
-                # Replace this with actual pyPLC/OpenV2G communication logic
-                status = await self.communicate_with_ev()
-                self.logger.info(f"EV status: {status}")
-                await self.send_to_backend({"ev_status": status})
-                await asyncio.sleep(2)
-            except Exception as e:
-                self.logger.error(f"pyPLC/OpenV2G error: {e}")
-                await asyncio.sleep(5)
-
-    async def communicate_with_ev(self):
-        # Simulate communication with EV
-        await asyncio.sleep(1)
-        return {"charging": True, "soc": 80}
-
-    def stop(self):
-        self._running = False

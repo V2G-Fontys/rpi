@@ -1,5 +1,5 @@
 import spidev
-from ws.status_ws import manager
+from APIServer.wsmanager.ws_manager import manager
 
 class DigipotService:
 	def __init__(self):
@@ -12,7 +12,7 @@ class DigipotService:
 	async def set_digipot(self, value):
 		try:
 			#Changed Digipot register 0x00 via Spidev based on the value when calling the function
-			self.spi.xfer2([0x00, self.value])
+			self.spi.xfer2([0x00, value])
 
 			#Print changes in the console
 			print(f"[DigiPot] Set digipot to value: {value}")
@@ -30,3 +30,4 @@ class DigipotService:
 		self._running = False
 		if self.spi:
 			self.spi.close()
+digipot = DigipotService()
