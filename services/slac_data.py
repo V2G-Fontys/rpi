@@ -1,28 +1,30 @@
 import asyncio
 import os
 
-SLACData = {
-    "mode": None,
-    "pev_mac": None, #pretend EV mac adress
-    "u_inlet": None, # 
-    "evse_present_voltage": None,
-    "pev_state": None,
-    "evse_state": None,
-    "soc": None,
-    "target_u_and_i": None,
-    "power_supply_u_present": None,
-    "power_supply_u_target": None
-}
-
 class SlacData:
     def __init__(self):
-        pass
+        with open("/home/baskoeten/rpi/services/slacData.txt", "w") as file:
+            pass 
     # functions for updating Data
     def update(self, key, value):
         print(f"[SlacData] Updating {key} with value {value}")
-        SLACData[key] = value
+        print("ID:", id(self))
+        with open("/home/baskoeten/rpi/services/slacData.txt", "w") as file:
+            file.write(f"{key}\n{value}\n")
+            
+            
+    def get(self, key):
+        print("ID:", id(self))
+        with open("/home/baskoeten/rpi/services/slacData.txt", "r") as file:
+            lines = file.readlines()
+            if lines:
+                if lines[0] == key:
+                    return lines[1]
+                else:
+                    print(f"[SlacData] Slac Data not found for")
+                    return ""
+        
+slacData = SlacData()
 
-    def get(key):
-        return SLACData.get(key)
-
-Sldata = SlacData()
+def get_slac():
+    return slacData

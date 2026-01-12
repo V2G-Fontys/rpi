@@ -1,6 +1,6 @@
 import aiohttp
 from core.logger import get_logger
-
+########this file is not used anymore
 logger = get_logger("HTTPRequests")
 
 class HTTPRequests:

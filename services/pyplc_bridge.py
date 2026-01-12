@@ -1,11 +1,11 @@
 import asyncio
 import os
-from services.slac_data import SlData
+from services.slac_data import get_slac
 #from core.http_requests import HTTPRequests
 from core.logger import get_logger
 
 
-
+slacData = get_slac()
 # this class boots the PyPlc application, and manages the Application data 
 class PyPlcService:
     def __init__(self):
@@ -55,8 +55,10 @@ class PyPlcService:
                 self.logger.error(f"Failed to parse: {line} -> {e}")
         return None
         
-    async def is_car_connected(self):
-        return S
+    async def is_car_prechargemode(self):
+        self.logger.info("####################################################################\n")
+        self.logger.info(slacData.get("evseState"))
+        return (slacData.get("evseState") == "PreCharging")
                 
     def stop(self):
         self._running = False

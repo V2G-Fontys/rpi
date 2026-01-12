@@ -12,7 +12,7 @@ class DigipotService:
 	async def set_digipot(self, value):
 		try:
 			#Changed Digipot register 0x00 via Spidev based on the value when calling the function
-			self.spi.xfer2([0x00, self.value])
+			self.spi.xfer2([0x00, value])
 
 			#Print changes in the console
 			print(f"[DigiPot] Set digipot to value: {value}")
