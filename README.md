@@ -12,6 +12,7 @@ For any sort of code should be a description written down here so that other pro
 ### ✍️ Authors
 
 - Mike Weijts | m.weijts@student.fontys.nl | 3rd Semester
+- Adam van der velden | adam.vandervelden@student.fontys.nl | 3rd Semester
 
 
 ## 🚀 Structure
@@ -19,17 +20,20 @@ For any sort of code should be a description written down here so that other pro
 
 **main.py**
 **services**
-  
+**statemachine**
+**pyplc/openv2gx**
 **tests
   testDigipotService.py**
     In this file you can test the DigipotService
     **IMPORTANT**
-    We used a Digi Pot 4 Click
+    We used a Digi Pot 6 Click
 
   **testMosfetService.py**
     In this file you can test the MosfetService
     **IMPORTANT**
     We used a **6R190P6 Mosfet** and a **Bi-Directional Logic Level Converter** to control the mosfets with a raspberry Pi.
+    *update: we changed our mosfets because we could not toggle them with the 3.3v output of the GPIO pins on the raspberry Pi,
+    after other considerations we eventually chose to switch them out with different ones.*
 
 
 ## ⬇️ Installation
