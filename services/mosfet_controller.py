@@ -23,7 +23,7 @@ class MosfetService:
 			#self.ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1) #comment this out if you do not need arduino for mosfets
 			logger.info("Serial port arduino opened")
 		except serial.SerialException as e:
-			logger.error("Failed to open serial:", e)
+			logger.error(f"Failed to open serial: {e}")
 			logger.info("If you didnt connect an arduino for mosfets you can comment this out")
 			exit()
 			
@@ -52,7 +52,7 @@ class MosfetService:
 		try:
 			#TODO: do two way communication to see if arduino is connected
 			self.ser.write(chr(pin).encode('utf-8')) 
-			self.ser.write(chr(State).encode('utf-8')) 
+			self.ser.write(chr(state).encode('utf-8')) 
 		except Exception as e:
 			logger.error(f"[Mosfet]Failed to Set mosfet({GPIOPin}) to {state}")
 			print(e)
