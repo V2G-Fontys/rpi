@@ -1,0 +1,27 @@
+from pathlib import Path
+import sys
+
+# Add the parent directory to the path
+parent_dir = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(parent_dir))
+
+from services.mosfet_controller import MosfetService
+from services.mosfet_controller import State
+import asyncio
+
+pins = [3, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 29, 31, 32, 33, 35, 36, 37, 38]
+
+async def main():
+    
+    mosfet = MosfetService()
+    
+    #Sets mosfet on or off set_mosfet({PIN}, '{ON/OFF}')
+    await mosfet.set_mosfet(29, State.OFF)
+    #await mosfet.set_mosfet(31, State.OFF)
+    #await mosfet.set_mosfet(33, State.OFF)
+    #await mosfet.set_mosfet(32, State.OFF)
+    #await mosfet.set_mosfet(23, State.OFF)
+    #for i in pins:
+     #   await mosfet.set_mosfet(i, State.OFF)
+
+asyncio.run(main())

@@ -89,6 +89,7 @@ class StateMachine:
     
     #idle switch case, do nothing
     async def _handle_idle(self):
+        await mosfet.disable_mosfets()
         self.logger.debug("System idle")
         
     #tries to connect to car, also checks if target KWH is correct    
@@ -96,6 +97,7 @@ class StateMachine:
         self.logger.info("Waiting for car connection")
 
         connected = await pyplc.is_car_prechargemode()
+        self.logger.info(connected)
         if connected:
             self.state = States.PRECHARGE
         else:
@@ -106,17 +108,18 @@ class StateMachine:
         self.logger.info("Precharging")
         
         val = 1 #should be true if they need to be switched o
-        await digipot.set_digipot(215)
-        await mosfet.set_arduino(MosfetPins.BOOSTCONVERTER, 1)
+        await mosfet.disable_mosfets()
+        await digipot.set_digipot(226)
+        await mosfet.set_mosfet(MosfetPins.BOOSTCONVERTER, 1)
         #mosfetStatus = mosfet.get_mosfet_status(MosfetPins.BOOSTCONVERTER) # only works for gpio on raspberry pi
         #self.logger.info(f"{mosfetStatus}")
-        await asyncio.sleep(1) 
-        await mosfet.set_arduino(MosfetPins.BOOSTCONVERTER, 0)
-        await mosfet.set_arduino(MosfetPins.PRECHARGE, val)
-        await mosfet.set_arduino(MosfetPins.NEGATIVE_RELAY, val)
-        await asyncio.sleep(4)
-        #await mosfet.set_arduino(MosfetPins.PRECHARGE, 0)
-        #await mosfet.set_arduino(MosfetPins.POSITIVE_RELAY, val)
+        await asyncio.sleep(10) 
+        await mosfet.set_mosfet(MosfetPins.BOOSTCONVERTER, 0)
+        await mosfet.set_mosfet(MosfetPins.PRECHARGE, val)
+        await mosfet.set_mosfet(MosfetPins.NEGATIVE_RELAY, val)
+        await asyncio.sleep(5)
+        await mosfet.set_mosfet(MosfetPins.PRECHARGE, 0)
+        await mosfet.set_mosfet(MosfetPins.POSITIVE_RELAY, val)
         
         
         # Decide next state
@@ -128,10 +131,14 @@ class StateMachine:
     async def _handle_discharging(self):
         self.logger.info("Discharging EV")
 
-        #TODO: can not currently use modbus so add logic later
+        if await pyplc.is_car_ListeningTCPmode:
+            self.state = States.CAR_DISCONNECTED
+        #TODO: can not currently use modbus so add logic 
 
         if self.current_KWH >= self.target_KWH:
             self.state = States.CHARGE_TARGET_REACHED
+            
+        
             
     async def _handle_charging(self):
         self.logger.info("Charging EV")

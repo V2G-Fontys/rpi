@@ -12,7 +12,7 @@ async def main():
     
     digipot = DigipotService()
     
-    wiper_value = 215
+    wiper_value = 224
 
     await digipot.set_digipot(wiper_value)
 

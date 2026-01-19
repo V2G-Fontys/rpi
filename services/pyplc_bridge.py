@@ -58,7 +58,11 @@ class PyPlcService:
     async def is_car_prechargemode(self):
         self.logger.info("####################################################################\n")
         self.logger.info(slacData.get("evseState"))
-        return (slacData.get("evseState") == "PreCharging")
+        return bool(slacData.get("evseState") == "PreCharging")
+        
+    async def is_car_ListeningTCPmode(self):
+        self.logger.info(slacData.get("evseState"))
+        return bool(slacData.get("evseState") == "Listening TCP")
                 
     def stop(self):
         self._running = False

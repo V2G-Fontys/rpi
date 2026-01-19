@@ -1,2 +1,2 @@
 evseState
-Listening TCP
+CurrentDemand

@@ -9,10 +9,10 @@ logger = logging.getLogger("MosfetService")
 
 #the pins used on the arduino , if you need to change the pins do that here
 class MosfetPins(IntEnum):
-	BOOSTCONVERTER = 10
-	PRECHARGE = 11
-	POSITIVE_RELAY = 12
-	NEGATIVE_RELAY = 13
+	BOOSTCONVERTER = 37
+	PRECHARGE = 31
+	POSITIVE_RELAY = 35
+	NEGATIVE_RELAY = 33
 	
 class MosfetService:
 	def __init__(self):
@@ -61,7 +61,7 @@ class MosfetService:
 	async def disable_mosfets(self):
 		try:
 			for mosfet in MosfetPins:
-				GPIO.output(mosfet.value, GPIO.LOW)
+				GPIO.output(mosfet, GPIO.LOW)
 		except Exception as e:
 			#Print changes in the console when something goes wrong
 			logger.error(f"[Mosfet] Failed to disable mosfet: {e}")

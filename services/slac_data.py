@@ -10,7 +10,8 @@ class SlacData:
         print(f"[SlacData] Updating {key} with value {value}")
         print("ID:", id(self))
         with open("/home/baskoeten/rpi/services/slacData.txt", "w") as file:
-            file.write(f"{key}\n{value}\n")
+            file.write(f"{key}\n")
+            file.write(f"{value}\n")
             
             
     def get(self, key):
@@ -18,8 +19,10 @@ class SlacData:
         with open("/home/baskoeten/rpi/services/slacData.txt", "r") as file:
             lines = file.readlines()
             if lines:
-                if lines[0] == key:
-                    return lines[1]
+                print(lines[0].strip() + " | " + key)
+                
+                if lines[0].strip() == key:
+                    return lines[1].strip()
                 else:
                     print(f"[SlacData] Slac Data not found for")
                     return ""
